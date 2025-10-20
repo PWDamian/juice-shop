@@ -17,6 +17,7 @@ import type { Challenge } from 'data/types'
 import isHeroku from './is-heroku'
 import isDocker from './is-docker'
 import isWindows from './is-windows'
+import * as security from '../lib/insecurity'
 export { default as isDocker } from './is-docker'
 export { default as isWindows } from './is-windows'
 // import isGitpod from 'is-gitpod') // FIXME Roll back to this when https://github.com/dword-design/is-gitpod/issues/94 is resolve
@@ -134,7 +135,7 @@ export const jwtFrom = ({ headers }: { headers: any }) => {
       const scheme = parts[0]
       const token = parts[1]
 
-      if (/^Bearer$/i.test(scheme)) {
+      if (/^Bearer$/i.test(scheme) && security.verify(token)) {
         return token
       }
     }
