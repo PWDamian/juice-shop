@@ -22,7 +22,7 @@ export function likeProductReviews () {
     }
 
     try {
-      const review = await db.reviewsCollection.findOne({ _id: id })
+      const review: any = await db.reviewsCollection.get(id)
       if (!review) {
         return res.status(404).json({ error: 'Not found' })
       }
@@ -32,26 +32,28 @@ export function likeProductReviews () {
         return res.status(403).json({ error: 'Not allowed' })
       }
 
-      await db.reviewsCollection.update(
-        { _id: id },
-        { $inc: { likesCount: 1 } }
-      )
+      try {
+        const doc: any = await db.reviewsCollection.get(id)
+        doc.likesCount = doc.likesCount + 1
+        await db.reviewsCollection.put(doc)
+      } catch (err) {
+        console.error('Error updating like count:', err)
+      }
 
       // Artificial wait for timing attack challenge
       await sleep(150)
       try {
-        const updatedReview: Review = await db.reviewsCollection.findOne({ _id: id })
+        const updatedReview: Review = await db.reviewsCollection.get(id)
         const updatedLikedBy = updatedReview.likedBy
         updatedLikedBy.push(user.data.email)
 
         const count = updatedLikedBy.filter(email => email === user.data.email).length
         challengeUtils.solveIf(challenges.timingAttackChallenge, () => count > 2)
 
-        const result = await db.reviewsCollection.update(
-          { _id: id },
-          { $set: { likedBy: updatedLikedBy } }
-        )
-        res.json(result)
+        const doc: any = await db.reviewsCollection.get(id)
+        doc.likedBy = updatedLikedBy
+        await db.reviewsCollection.put(doc)
+        res.json(doc)
       } catch (err) {
         res.status(500).json(err)
       }

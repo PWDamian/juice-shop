@@ -14,7 +14,11 @@ export function orderHistory () {
     if (loggedInUser?.data?.email && loggedInUser.data.id) {
       const email = loggedInUser.data.email
       const updatedEmail = email.replace(/[aeiou]/gi, '*')
-      const order = await ordersCollection.find({ email: updatedEmail })
+      const result = await ordersCollection.find({
+        selector: { email: updatedEmail }
+      })
+      const order = result.docs
+
       res.status(200).json({ status: 'success', data: order })
     } else {
       next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))
@@ -24,8 +28,9 @@ export function orderHistory () {
 
 export function allOrders () {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const order = await ordersCollection.find()
-    res.status(200).json({ status: 'success', data: order.reverse() })
+    const result = await ordersCollection.allDocs({ include_docs: true })
+    const orders = result.rows.map(row => row.doc)
+    res.status(200).json({ status: 'success', data: orders.reverse() })
   }
 }
 
@@ -33,7 +38,10 @@ export function toggleDeliveryStatus () {
   return async (req: Request, res: Response, next: NextFunction) => {
     const deliveryStatus = !req.body.deliveryStatus
     const eta = deliveryStatus ? '0' : '1'
-    await ordersCollection.update({ _id: req.params.id }, { $set: { delivered: deliveryStatus, eta } })
+    const doc: any = await ordersCollection.get(req.params.id)
+    doc.delivered = deliveryStatus
+    doc.eta = eta
+    await ordersCollection.put(doc)
     res.status(200).json({ status: 'success' })
   }
 }

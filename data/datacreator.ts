@@ -396,19 +396,22 @@ async function createProducts () {
         })
           .then(async ({ id }: { id: number }) =>
             await Promise.all(
-              reviews.map(({ text, author }) =>
-                reviewsCollection.insert({
-                  message: text,
-                  author: datacache.users[author].email,
-                  product: id,
-                  likesCount: 0,
-                  likedBy: []
-                }).catch((err: unknown) => {
+              reviews.map(async ({ text, author }) => {
+                try {
+                  await reviewsCollection.post({
+                    message: text,
+                    author: datacache.users[author].email,
+                    product: id.toString(),
+                    likesCount: 0,
+                    likedBy: []
+                  })
+                } catch (err: unknown) {
                   logger.error(`Could not insert Product Review ${text}: ${utils.getErrorMessage(err)}`)
-                })
-              )
+                }
+              })
             )
           )
+
     )
   )
 
@@ -719,8 +722,8 @@ async function createOrders () {
   ]
 
   return await Promise.all(
-    orders.map(({ orderId, email, totalPrice, bonus, products, eta, delivered }) =>
-      ordersCollection.insert({
+    orders.map(async ({ orderId, email, totalPrice, bonus, products, eta, delivered }) =>
+      await ordersCollection.post({
         orderId,
         email,
         totalPrice,

@@ -20,7 +20,7 @@ export function createProductReviews () {
     )
 
     try {
-      await reviewsCollection.insert({
+      await reviewsCollection.post({
         product: req.params.id,
         message: req.body.message,
         author: req.body.author,

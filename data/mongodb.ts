@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-// @ts-expect-error FIXME due to non-existing type definitions for MarsDB
-import * as MarsDB from 'marsdb'
+import PouchDB from 'pouchdb'
+import PouchFind from 'pouchdb-find'
 
-export const reviewsCollection = new MarsDB.Collection('posts')
-export const ordersCollection = new MarsDB.Collection('orders')
+PouchDB.plugin(PouchFind)
+
+export const reviewsCollection = new PouchDB('posts')
+export const ordersCollection = new PouchDB('orders')

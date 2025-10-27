@@ -190,11 +190,13 @@ export function observeMetrics () {
       accuracyMetrics.set({ phase: 'find it' }, accuracy.totalFindItAccuracy())
       accuracyMetrics.set({ phase: 'fix it' }, accuracy.totalFixItAccuracy())
 
-      ordersCollection.count({}).then((orderCount: number) => {
+      void ordersCollection.allDocs({ include_docs: true }).then(result => {
+        const orderCount = result.rows.length
         if (orderCount) orderMetrics.set(orderCount)
       })
 
-      reviewsCollection.count({}).then((reviewCount: number) => {
+      void reviewsCollection.allDocs({ include_docs: true }).then((result: any) => {
+        const reviewCount = result.rows.length
         if (reviewCount) interactionsMetrics.set({ type: 'review' }, reviewCount)
       })
 

@@ -58,15 +58,12 @@ export function dataExport () {
         })
       })
 
-      db.ordersCollection.find({ email: updatedEmail }).then((orders: Array<{
-        orderId: string
-        totalPrice: number
-        products: ProductModel[]
-        bonus: number
-        eta: string
-      }>) => {
+      db.ordersCollection.find({
+        selector: { email: updatedEmail }
+      }).then((ordersResult: any) => {
+        const orders = ordersResult.docs || []
         if (orders.length > 0) {
-          orders.forEach(order => {
+          orders.forEach((order: any) => {
             userData.orders.push({
               orderId: order.orderId,
               totalPrice: order.totalPrice,
@@ -77,15 +74,12 @@ export function dataExport () {
           })
         }
 
-        db.reviewsCollection.find({ author: email }).then((reviews: Array<{
-          message: string
-          author: string
-          product: number
-          likesCount: number
-          likedBy: string
-        }>) => {
+        db.reviewsCollection.find({
+          selector: { author: email }
+        }).then((reviewsResult: any) => {
+          const reviews = reviewsResult.docs || []
           if (reviews.length > 0) {
-            reviews.forEach(review => {
+            reviews.forEach((review: any) => {
               userData.reviews.push({
                 message: review.message,
                 author: review.author,

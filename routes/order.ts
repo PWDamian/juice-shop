@@ -151,7 +151,7 @@ export function placeOrder () {
             })
           }
 
-          db.ordersCollection.insert({
+          void db.ordersCollection.post({
             promotionalAmount: discountAmount,
             paymentId: req.body.orderDetails ? req.body.orderDetails.paymentId : null,
             addressId: req.body.orderDetails ? req.body.orderDetails.addressId : null,
