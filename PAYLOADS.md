@@ -17,3 +17,7 @@
 5. Edit review `PATCH /rest/products/reviews`:
 
    `"id": {"$ne": "a"},`
+
+6. Login form:
+
+   Email: `' OR 1=1 --`
