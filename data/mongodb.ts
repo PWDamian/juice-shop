@@ -5,8 +5,16 @@
 
 import PouchDB from 'pouchdb'
 import PouchFind from 'pouchdb-find'
+import fs from 'node:fs'
+import path from 'node:path'
 
 PouchDB.plugin(PouchFind)
 
-export const reviewsCollection = new PouchDB('posts')
-export const ordersCollection = new PouchDB('orders')
+const storageDir = path.join(__dirname, 'nosql') + path.sep
+
+fs.mkdirSync(storageDir, { recursive: true })
+
+const Pouch = PouchDB.defaults({ prefix: storageDir })
+
+export const reviewsCollection = new Pouch('posts')
+export const ordersCollection = new Pouch('orders')
