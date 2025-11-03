@@ -21,3 +21,7 @@
 6. Login form:
 
    Email: `' OR 1=1 --`
+
+7. Profile:
+
+   Username: `#{require('fs').readdirSync('/bin').join(',')}`
