@@ -38,3 +38,7 @@
       ]>
     <lolz>&lol1;</lolz>
     ```
+   
+9. FTP:
+
+    `http://localhost:3000/ftp/coupons_2013.md.bak%2500.pdf`
